@@ -1,7 +1,7 @@
 # Space invaders
 
 <p align="center">
-  <img src="https://i.imgur.com/5YN2Zv1.png" width="650" title="hover text">
+  <img src="https://i.imgur.com/mld1SIL.png" width="650" title="hover text">
 </p>
 
 This game was made for the OpenGL's university course.
