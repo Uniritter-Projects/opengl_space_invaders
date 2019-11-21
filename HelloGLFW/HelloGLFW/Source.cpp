@@ -6,8 +6,8 @@ float xMin = -1.0, xMax = 1.0, yMin = -1.0, yMax = 1.0;
 
 struct enemy {
 	bool alive = true;
-	int xPos;
-	int yPos;
+	float xPos;
+	float yPos;
 };
 
 //Player
@@ -16,31 +16,44 @@ bool shoot = false;
 bool alive = true;
 
 //Enemies
-const int enemiesCount = 5;
+const int enemiesCount = 15;
 enemy enemies[enemiesCount];
-
-void DrawEnemies()
-{
-	glColor3f(0.52, 0.8, 0.22);
-	glBegin(GL_QUADS);
-	glVertex2f(-0.05, 0.5);
-	glVertex2f(0.05, 0.5);
-	glVertex2f(0.05, 0.6);
-	glVertex2f(-0.05, 0.6);
-	glEnd();
-}
+int offset = 0.2;
 
 void SpawnEnemies()
 {
-	float xPos = 0.05;
-	float yPos = 0.05;
+	float xPos = -0.45;
+	float yPos = 0.5;
 
 	for (int i = 0; i < enemiesCount; i++)
 	{
+		if (i % 5 == 0 && i > 0)
+		{
+			xPos = -0.45;
+			yPos = yPos - 0.2;
+		}
+
 		enemies[i].xPos = xPos;
 		enemies[i].yPos = yPos;
 
-		xPos = xPos + 0.02;
+		xPos = xPos + 0.2;
+	}
+}
+
+void DrawEnemies()
+{
+	for (int i = 0; i < enemiesCount; i++)
+	{
+		if (enemies[i].alive)
+		{
+			glColor3f(0.52, 0.8, 0.22);
+			glBegin(GL_QUADS);
+			glVertex2f(enemies[i].xPos, enemies[i].yPos);
+			glVertex2f(enemies[i].xPos + 0.1, enemies[i].yPos);
+			glVertex2f(enemies[i].xPos + 0.1, enemies[i].yPos + 0.1);
+			glVertex2f(enemies[i].xPos, enemies[i].yPos + 0.1);
+			glEnd();
+		}
 	}
 }
 
@@ -58,6 +71,8 @@ void DrawScene() {
 
 	if (!shoot)
 		lastmovex = movex;
+
+	DrawEnemies();
 
 	//Shoot
 	if (alive)
@@ -129,13 +144,14 @@ void DrawScene() {
 		glVertex2f(0.2 + movex, -0.8);
 		glVertex2f(0.1 + movex, -0.8);
 		glEnd();
-	}
 
-	//Enemies
-	for (int i = 0; i < enemiesCount; i++)
-	{
-		DrawEnemies();
-		glTranslatef(0.2, 0, 1);
+		glColor3f(0.2, 0.2, 0.2);
+		glBegin(GL_QUADS);
+		glVertex2f(-0.05 + movex, -0.7);
+		glVertex2f(0.05 + movex, -0.7);
+		glVertex2f(0.05 + movex, -0.6);
+		glVertex2f(-0.05 + movex, -0.6);
+		glEnd();
 	}
 }
 
@@ -149,7 +165,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-		alive = false;
+		alive = !alive;
 
 	if ((key == GLFW_KEY_RIGHT || key == GLFW_KEY_D) && alive)
 		movex += 0.08;
